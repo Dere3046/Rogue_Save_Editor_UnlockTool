@@ -12,14 +12,58 @@
 - 修改游戏统计数据（nuggets、胜利次数、死亡次数等）
 
 ## 要求
-- .NET 8.0 运行环境
-- 游戏 DLL 文件（`Assembly-CSharp.dll`、`Assembly-CSharp-firstpass.dll`）必须位于 `win_x64/lib` 文件夹中
+
+### 运行要求
+- **操作系统**: Windows 10 版本 1607+ (x64) 或 Windows 11 (x64)
+- **.NET 运行时**: 独立发布版本不需要（已打包进可执行文件）
+- **游戏 DLL**: 仅在编译时需要（运行独立版本不需要）
+
+### 系统兼容性
+
+| 系统 | 是否支持 |
+|------|---------|
+| Windows 11 | ✅ 支持 |
+| Windows 10 (1607+) | ✅ 支持 |
+| Windows 10 (1507-1605) | ❌ 不支持 |
+| Windows 8.1 | ❌ 不支持 |
+| Windows 7 | ❌ 不支持 |
+
+> **注意**: 最低 Windows 版本要求是 1607 (build 10.0.14393.0)，这是 .NET 8.0 的要求。
 
 ## 编译
+
+### 前置条件
+- .NET 8.0 SDK
+- 游戏 DLL 文件位于 `win_x64/lib/`:
+  - `Assembly-CSharp.dll`
+  - `Assembly-CSharp-firstpass.dll`
+
+### 编译命令
+
 ```bash
 cd win_x64
+
+# 调试编译
+dotnet build
+
+# 发布编译
 dotnet build -c Release
+
+# 发布独立可执行文件（单个 .exe 文件）
+dotnet publish -c Release -r win-x64 ^
+  --self-contained true ^
+  -p:PublishSingleFile=true ^
+  -p:IncludeNativeLibrariesForSelfExtract=true ^
+  -o publish_standalone
 ```
+
+### 输出对比
+
+| 编译类型 | 命令 | 输出目录 | 大小 | 依赖 |
+|---------|------|---------|------|------|
+| 调试 | `dotnet build` | `bin/Debug/` | ~30 KB | 需要 .NET 8.0 |
+| 发布 | `dotnet build -c Release` | `bin/Release/` | ~30 KB | 需要 .NET 8.0 |
+| 独立 | `dotnet publish ...` | `publish_standalone/` | ~74 MB | 无依赖 |
 
 ## 使用方法
 

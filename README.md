@@ -12,14 +12,58 @@ A save editor for the game **Streets of Rogue** to read and modify `GameUnlocks.
 - Modify in-game statistics (nuggets, wins, deaths, etc.)
 
 ## Requirements
-- .NET 8.0 Runtime
-- Game DLL files (`Assembly-CSharp.dll`, `Assembly-CSharp-firstpass.dll`) must be present in the `win_x64/lib` folder
+
+### Runtime Requirements
+- **Operating System**: Windows 10 version 1607+ (x64) or Windows 11 (x64)
+- **.NET Runtime**: Not required for standalone build (included in executable)
+- **Game DLLs**: Required only for building (not for running standalone build)
+
+### System Compatibility
+
+| System | Supported |
+|--------|-----------|
+| Windows 11 | ✅ Yes |
+| Windows 10 (1607+) | ✅ Yes |
+| Windows 10 (1507-1605) | ❌ No |
+| Windows 8.1 | ❌ No |
+| Windows 7 | ❌ No |
+
+> **Note**: The minimum Windows version is 1607 (build 10.0.14393.0) due to .NET 8.0 requirements.
 
 ## Build
+
+### Prerequisites
+- .NET 8.0 SDK
+- Game DLL files in `win_x64/lib/`:
+  - `Assembly-CSharp.dll`
+  - `Assembly-CSharp-firstpass.dll`
+
+### Build Commands
+
 ```bash
 cd win_x64
+
+# Debug build
+dotnet build
+
+# Release build
 dotnet build -c Release
+
+# Publish standalone executable (single .exe file)
+dotnet publish -c Release -r win-x64 \
+  --self-contained true \
+  -p:PublishSingleFile=true \
+  -p:IncludeNativeLibrariesForSelfExtract=true \
+  -o publish_standalone
 ```
+
+### Output
+
+| Build Type | Command | Output | Size |
+|------------|---------|--------|------|
+| Debug | `dotnet build` | `bin/Debug/` | ~30 KB (requires .NET) |
+| Release | `dotnet build -c Release` | `bin/Release/` | ~30 KB (requires .NET) |
+| Standalone | `dotnet publish ...` | `publish_standalone/` | ~74 MB (no dependencies) |
 
 ## Usage
 
